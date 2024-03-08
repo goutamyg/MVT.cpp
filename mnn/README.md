@@ -1,4 +1,4 @@
-# C++ implementation of [Mobile Vision Transformer-based Visual Object Tracking](https://papers.bmvc2023.org/0800.pdf) using the [MNN framework](https://github.com/alibaba/MNN) by [Alibaba](https://github.com/alibaba)
+# C++ implementation of [MVT Tracker](https://papers.bmvc2023.org/0800.pdf) using the [MNN framework](https://github.com/alibaba/MNN) by [Alibaba](https://github.com/alibaba)
 
 ## Dependencies
 * [OpenCV](https://github.com/opencv/opencv) 4.8.0
