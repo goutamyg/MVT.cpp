@@ -1,4 +1,4 @@
-# C++ implementation of [MVT Tracker](https://papers.bmvc2023.org/0800.pdf) using the [MNN framework](https://github.com/alibaba/MNN) by [Alibaba](https://github.com/alibaba)
+# C++ implementation of [MVT Tracker](https://papers.bmvc2023.org/0800.pdf) using the [MNN framework](https://github.com/alibaba/MNN)
 
 ## Dependencies
 * [OpenCV](https://github.com/opencv/opencv) 4.8.0
