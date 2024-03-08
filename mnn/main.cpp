@@ -18,9 +18,9 @@ void track(MVT *tracker, const char *video_path)
     std::ifstream inputFile(folderPath + "../groundtruth.txt");
     std::string groundtruth_anno;
     if (std::getline(inputFile, groundtruth_anno)) {
-        std::cout << "First line: " << groundtruth_anno << std::endl;
+        std::cout << "Initial bounding-box annotation: " << groundtruth_anno << std::endl;
     } else {
-        std::cerr << "Failed to read first line." << std::endl;
+        std::cerr << "Failed to read the annotation file" << std::endl;
     }
 
     // Initial bounding box
