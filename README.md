@@ -1,5 +1,6 @@
-# MVT.cpp
-C++ implementation of the BMVC2023 paper [Mobile Vision Transformer-based Visual Object Tracking](https://papers.bmvc2023.org/0800.pdf)
+# C++ implementation of the BMVC2023 paper [Mobile Vision Transformer-based Visual Object Tracking](https://papers.bmvc2023.org/0800.pdf)
+
+The original Pytorch implementation is available [here](https://github.com/goutamyg/MVT).
 
 ## Why C++ implementation? 
 * Improve the model inference speed (*fps*) 
