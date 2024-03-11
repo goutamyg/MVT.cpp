@@ -3,7 +3,7 @@
 ## Dependencies
 * [OpenCV](https://github.com/opencv/opencv) 4.8.0
 * [MNN](https://github.com/alibaba/MNN) (Related header files and the *libMNN.so* are already presented in the `third_party/` folder)
-* Download the pretrained model from [here](https://drive.google.com/file/d/1F6iThNlFcyxfDeworOz170BhH2AU4G3h/view?usp=drive_link) under `model/` folder
+* Download the pretrained model from [here](https://drive.google.com/file/d/1F6iThNlFcyxfDeworOz170BhH2AU4G3h/view?usp=drive_link) and place it under `model/` folder
 
 ## Build
 ```
