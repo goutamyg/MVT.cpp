@@ -26,6 +26,7 @@ For example,
 
 
 ## To-Do
+* Fix the occasional *NaN* results
 * GPU-based inference
 
 ## Acknowledgements
