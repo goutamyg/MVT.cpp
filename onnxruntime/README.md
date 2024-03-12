@@ -24,9 +24,15 @@ For example,
 
 ## Single vs Multi-thread *fps* evaluation
 
+## Python demo
+Run the onnxruntime-based python demo file as,
+```
+python3 ./python3 mvt_onnxruntime_demo.py
+```
+Make sure you install the required libraries.
 
 ## To-Do
-* Fix the occasional *NaN* results
+* [Fix the occasional *NaN* results](https://github.com/microsoft/onnxruntime/issues/19851)
 * GPU-based inference
 
 ## Acknowledgements
