@@ -150,6 +150,19 @@ void MVT::prepareInputTensors(cv::Mat &image_z, cv::Mat &image_x, float*& blob_z
     std::vector<float> inputTensorValues_Z(blob_z, blob_z + inputTensorSize_Z);
     std::vector<float> inputTensorValues_X(blob_x, blob_x + inputTensorSize_X);
 
+    //print for values of inputs, X and Z (for debugging purposes)
+    std::cout << "Input X values: [" << std::endl;
+    for (const auto& value : inputTensorValues_X) {
+        std::cout << value << ", ";
+    }
+    std::cout << "]" << std::endl;
+
+    std::cout << "Input Z values: [" << std::endl;
+    for (const auto& value : inputTensorValues_Z) {
+        std::cout << value << ", ";
+    }
+    std::cout << "]" << std::endl;
+
     Ort::MemoryInfo memoryInfo = Ort::MemoryInfo::CreateCpu(OrtAllocatorType::OrtArenaAllocator, OrtMemType::OrtMemTypeDefault);
 
     inputTensors.push_back(Ort::Value::CreateTensor(memoryInfo, 
