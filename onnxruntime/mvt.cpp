@@ -42,6 +42,15 @@ size_t vectorProduct(const std::vector<int64_t>& vector)
     return product;
 }
 
+bool inRange(const float* ptr, size_t size) {
+    for (size_t i = 0; i < size; ++i) {
+        if (ptr[i] < 0.0f or ptr[i] > 1.0f) {
+            return false; // If any element is not between 0.0 and 1.0, return false immediately
+        }
+    }
+    return true;
+}
+
 MVT::MVT(const char *model_path) {
 
     // Create ONNX Runtime environment with warning logging level
@@ -80,28 +89,11 @@ MVT::MVT(const char *model_path) {
     // Get input and output names from the session
     this->inputNames.push_back(session.GetInputName(0, allocator)); // not supported in 1.16.1, but works under 1.12.1
     this->inputNames.push_back(session.GetInputName(1, allocator)); // not supported in 1.16.1, but works under 1.12.1
-    //this->inputNames.push_back("z");
-    //this->inputNames.push_back("x");
 
     this->outputNames.push_back(session.GetOutputName(0, allocator)); // not supported in 1.16.1, but works under 1.12.1
     this->outputNames.push_back(session.GetOutputName(1, allocator)); // not supported in 1.16.1, but works under 1.12.1
     this->outputNames.push_back(session.GetOutputName(2, allocator)); // not supported in 1.16.1, but works under 1.12.1
     this->outputNames.push_back(session.GetOutputName(3, allocator)); // not supported in 1.16.1, but works under 1.12.1
-    // this->outputNames.push_back("cls");
-    // this->outputNames.push_back("reg");
-    // this->outputNames.push_back("size_map");
-    // this->outputNames.push_back("offset_map");
-
-    /*
-    // Print input and output names
-    std::cout << "Input-1 name: " << this->inputNames[0] << std::endl;
-    std::cout << "Input-2 name: " << this->inputNames[1] << std::endl;
-
-    std::cout << "Output-1 name: " << this->outputNames[0] << std::endl;
-    std::cout << "Output-2 name: " << this->outputNames[1] << std::endl;
-    std::cout << "Output-3 name: " << this->outputNames[2] << std::endl;
-    std::cout << "Output-4 name: " << this->outputNames[3] << std::endl;
-    */
 
     // Generate hann2d window
     this->cfg.window = hann(this->cfg.feat_sz);
@@ -139,29 +131,14 @@ void MVT::preprocessing(cv::Mat &image, float*& blob, std::vector<int64_t>& inpu
     cv::split(floatImage, chw);
 }
 
-
-void MVT::prepareInputTensors(cv::Mat &image_z, cv::Mat &image_x, float*& blob_z, float*& blob_x, 
-                        std::vector<int64_t>& inputTensorShape_Z, std::vector<int64_t>& inputTensorShape_X, std::vector<Ort::Value>& inputTensors)
+void MVT::prepareInputTensors(cv::Mat &image_z, cv::Mat &image_x, 
+                            std::vector<float>& inputTensorValues_Z, std::vector<float>& inputTensorValues_X, 
+                            std::vector<int64_t>& inputTensorShape_Z, std::vector<int64_t>& inputTensorShape_X, 
+                            std::vector<Ort::Value>& inputTensors)
 {
 
     size_t inputTensorSize_Z = vectorProduct(inputTensorShape_Z);
     size_t inputTensorSize_X = vectorProduct(inputTensorShape_X);
-
-    std::vector<float> inputTensorValues_Z(blob_z, blob_z + inputTensorSize_Z);
-    std::vector<float> inputTensorValues_X(blob_x, blob_x + inputTensorSize_X);
-
-    //print for values of inputs, X and Z (for debugging purposes)
-    std::cout << "Input X values: [" << std::endl;
-    for (const auto& value : inputTensorValues_X) {
-        std::cout << value << ", ";
-    }
-    std::cout << "]" << std::endl;
-
-    std::cout << "Input Z values: [" << std::endl;
-    for (const auto& value : inputTensorValues_Z) {
-        std::cout << value << ", ";
-    }
-    std::cout << "]" << std::endl;
 
     Ort::MemoryInfo memoryInfo = Ort::MemoryInfo::CreateCpu(OrtAllocatorType::OrtArenaAllocator, OrtMemType::OrtMemTypeDefault);
 
@@ -192,30 +169,22 @@ const MVT_output& MVT::track(const cv::Mat &img)
     std::vector<int64_t> inputTensorShape_X {1, 3, -1, -1};
     this->preprocessing(x_patch, blob_x, inputTensorShape_X);
 
+    // check the input-X is in the range 0-1
+    size_t inputTensorSize_X = vectorProduct(inputTensorShape_X);
+    assert(inRange(blob_x, inputTensorSize_X) == true);
+
     float* blob_z = nullptr;
     std::vector<int64_t> inputTensorShape_Z {1, 3, -1, -1};
     this->preprocessing(this->z_patch, blob_z, inputTensorShape_Z);
 
-    std::vector<Ort::Value> ortInputs;
-    this->prepareInputTensors(this->z_patch, x_patch, blob_z, blob_x, inputTensorShape_Z, inputTensorShape_X, ortInputs);
-
-    // check for NaN values in X and Z
-    size_t inputTensorSize_X = vectorProduct(inputTensorShape_X);
-    for (size_t i = 0; i < inputTensorSize_X; ++i) {
-        if (std::isnan(blob_x[i])) {
-            std::cout << "NaN found at index " << i << std::endl;
-        }
-    }
-
     size_t inputTensorSize_Z = vectorProduct(inputTensorShape_Z);
-    for (size_t i = 0; i < inputTensorSize_Z; ++i) {
-        if (std::isnan(blob_z[i])) {
-            std::cout << "NaN found at index " << i << std::endl;
-        }
-    }
+    assert(inRange(blob_z, inputTensorSize_Z) == true);
 
-    delete[] blob_z;
-    delete[] blob_x;
+    std::vector<float> inputTensorValues_Z(blob_z, blob_z + inputTensorSize_Z);
+    std::vector<float> inputTensorValues_X(blob_x, blob_x + inputTensorSize_X);
+
+    std::vector<Ort::Value> ortInputs;
+    this->prepareInputTensors(this->z_patch, x_patch, inputTensorValues_Z, inputTensorValues_X, inputTensorShape_Z, inputTensorShape_X, ortInputs);
     
     // Run inference
     std::vector<Ort::Value> outputTensors = this->session.Run(Ort::RunOptions{nullptr},
@@ -224,6 +193,9 @@ const MVT_output& MVT::track(const cv::Mat &img)
                                                          this->inputNames.size(),
                                                          this->outputNames.data(),
                                                          this->outputNames.size());
+
+    delete[] blob_z;
+    delete[] blob_x;
 
     // Fetch output tensors
     std::vector<std::vector<float>> outputData;
@@ -237,6 +209,7 @@ const MVT_output& MVT::track(const cv::Mat &img)
         auto outputDataPtr = outputTensor.GetTensorMutableData<float>();
         std::vector<float> output(outputDataPtr, outputDataPtr + tensorInfo.GetElementCount());
 
+        /*
         // Print output shape
         std::cout << "Output Shape: [";
         for (size_t j = 0; j < outputShape.size(); ++j) {
@@ -254,6 +227,7 @@ const MVT_output& MVT::track(const cv::Mat &img)
             std::cout << outputDataPtr[j] << " ";
         }
         std::cout << " " << std::endl;
+        */
 
         // Store output data for further processing
         outputData.push_back(output);

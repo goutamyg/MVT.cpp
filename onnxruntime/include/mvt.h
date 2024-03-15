@@ -61,8 +61,10 @@ class MVT {
 
         void preprocessing(cv::Mat &image, float*& blob, std::vector<int64_t>& inputTensorShape);
 
-        void prepareInputTensors(cv::Mat &image_z, cv::Mat &image_x, float*& blob_z, float*& blob_x, 
-                            std::vector<int64_t>& inputTensorShape_Z, std::vector<int64_t>& inputTensorShape_X, std::vector<Ort::Value>& inputTensors);
+        void prepareInputTensors(cv::Mat &image_z, cv::Mat &image_x, 
+                            std::vector<float>& inputTensorValues_Z, std::vector<float>& inputTensorValues_X, 
+                            std::vector<int64_t>& inputTensorShape_Z, std::vector<int64_t>& inputTensorShape_X, 
+                            std::vector<Ort::Value>& inputTensors);
 
         void cal_bbox(std::vector<float> &scores_tensor, std::vector<float> &offsets_tensor, std::vector<float> &sizes_tensor, 
                             BBox &pred_box, float &max_score, float resize_factor);
