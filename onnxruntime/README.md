@@ -31,8 +31,10 @@ python3 ./python3 mvt_onnxruntime_demo.py
 ```
 Make sure you install the required libraries.
 
+## Some lessons learned
+* [Occasional *NaN* results](https://github.com/microsoft/onnxruntime/issues/19851)
+
 ## To-Do
-* [Fix the occasional *NaN* results](https://github.com/microsoft/onnxruntime/issues/19851)
 * GPU-based inference
 
 ## Acknowledgements
