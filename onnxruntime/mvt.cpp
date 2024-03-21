@@ -51,6 +51,11 @@ bool inRange(const float* ptr, size_t size) {
     return true;
 }
 
+// function to round-off to the nearest integer (and next higher integer in case of a tie)
+int customRound(float x) {
+    return static_cast<int>(x < 0.0f ? std::ceil(x) : std::floor(x));
+}
+
 MVT::MVT(const char *model_path) {
 
     // Create ONNX Runtime environment with warning logging level
@@ -334,8 +339,8 @@ void MVT::sample_target(const cv::Mat &im, cv::Mat &cropped, BBox target_bb, flo
 
     float cx = x + 0.5 * w;
     float cy = y + 0.5 * h;
-    int x1 = std::round(cx - crop_sz * 0.5);
-    int y1 = std::round(cy - crop_sz * 0.5);
+    int x1 = customRound(cx - crop_sz * 0.5);
+    int y1 = customRound(cy - crop_sz * 0.5);
 
     int x2 = x1 + crop_sz;
     int y2 = y1 + crop_sz;

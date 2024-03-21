@@ -17,7 +17,6 @@ find_package(OpenCV REQUIRED)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 add_executable(mvt_demo main.cpp mvt.cpp)
-# add_executable(test test.cpp)
 
 target_include_directories(mvt_demo PRIVATE ${PROJECT_SOURCE_DIR}/third_party/onnxruntime-linux-x64-1.12.1/include)
 target_compile_features(mvt_demo PRIVATE cxx_std_17)
