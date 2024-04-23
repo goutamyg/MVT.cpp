@@ -5,6 +5,7 @@ The original Pytorch implementations is available in these links: [MVT](https://
 ## Why C++ implementation? 
 * Improve the model inference speed (*fps*) 
 * Single vs Multi-thread throughput analysis
+* Lower memory footprint compared to Python
 * Subsequent deployment on Andorid devices using JNI
 
 ## Supported Frameworks
